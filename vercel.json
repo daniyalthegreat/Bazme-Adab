@@ -1,0 +1,15 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/student-login", "destination": "/pages/student-login.html" },
+    { "source": "/register", "destination": "/pages/register.html" },
+    { "source": "/forgot-password", "destination": "/pages/forgot-password.html" },
+    { "source": "/dashboard", "destination": "/pages/dashboard.html" },
+    { "source": "/payment", "destination": "/pages/payment.html" },
+    { "source": "/payment-submitted", "destination": "/pages/payment-submitted.html" },
+    { "source": "/admin-login", "destination": "/pages/admin-login.html" },
+    { "source": "/admin-forgot-password", "destination": "/pages/admin-forgot-password.html" },
+    { "source": "/admin-dashboard", "destination": "/pages/admin-dashboard.html" }
+  ]
+}
