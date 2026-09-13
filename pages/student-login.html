@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Login — Bazme Adab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" href="../favicon.png">
+<link rel="stylesheet" href="../css/main.css">
+<script src="../js/cursor.js" defer></script>
+</head>
+<body>
+
+<div id="pageLoader">
+  <div class="loader-mark"><span class="loader-dot"></span> Bazme Adab</div>
+</div>
+
+<div class="auth-wrap">
+  <div class="auth-wrap-inner">
+    <a href="../index.html" class="back-link">&larr; Back to home</a>
+    <div class="auth-card">
+    <a href="../index.html" class="auth-mark"><img src="../favicon.svg" alt=""> Bazme Adab</a>
+    <h2>Welcome back</h2>
+    <p class="auth-sub">Sign in to continue your lessons</p>
+
+    <div class="auth-alert" id="alert"></div>
+
+    <form id="loginForm">
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" required placeholder="you@example.com">
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" required placeholder="••••••••">
+        <div class="field-error" id="err"></div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+    </form>
+
+    <div class="auth-divider">or</div>
+    <button type="button" class="btn-google" id="googleSignIn">
+      <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.91c1.7-1.57 2.69-3.88 2.69-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.26c-.81.54-1.84.86-3.05.86-2.34 0-4.32-1.58-5.03-3.71H.96v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.97 10.71A5.4 5.4 0 0 1 3.68 9c0-.59.1-1.17.29-1.71V4.96H.96A9 9 0 0 0 0 9c0 1.45.35 2.83.96 4.04l3.01-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.51.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.96l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z"/></svg>
+      Continue with Google
+    </button>
+
+    <div class="auth-links">
+      <a href="forgot-password.html">Forgot password?</a>
+      <a href="register.html">Create an account</a>
+    </div>
+    <div class="auth-footer-note">
+      <a href="admin-login.html" style="color: var(--charcoal-soft); font-weight:600;">Sign in as admin instead</a>
+    </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js"></script>
+<script src="../js/auth-supabase.js"></script>
+<script>
+const loadStart = Date.now();
+window.addEventListener('load', function(){
+  const elapsed = Date.now() - loadStart;
+  const wait = Math.max(0, 450 - elapsed);
+  setTimeout(function(){
+    document.getElementById('pageLoader').classList.add('hide');
+  }, wait);
+});
+
+document.getElementById('googleSignIn').addEventListener('click', async function(){
+  const result = await signInWithGoogle('dashboard.html');
+  if (!result.ok) {
+    const errEl = document.getElementById('err');
+    errEl.textContent = result.error;
+    errEl.style.display = 'block';
+  }
+});
+
+document.getElementById('loginForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const errEl = document.getElementById('err');
+  const result = await loginStudent(email, password);
+  if (result.ok) {
+    window.location.href = 'dashboard.html';
+  } else {
+    errEl.textContent = result.error;
+    errEl.style.display = 'block';
+  }
+});
+</script>
+</body>
+</html>

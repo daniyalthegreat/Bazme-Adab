@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — Bazme Adab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" href="../favicon.png">
+<link rel="stylesheet" href="../css/main.css">
+<script src="../js/cursor.js" defer></script>
+</head>
+<body>
+
+<div id="pageLoader">
+  <div class="loader-mark"><span class="loader-dot"></span> Bazme Adab</div>
+</div>
+
+<div class="dash-nav">
+  <a href="../index.html" class="nav-mark" style="font-family: var(--serif); font-size:18px;"><img src="../favicon.svg" alt="" style="width:19px;height:19px;"> Bazme Adab — Admin</a>
+  <div><a href="#" id="logoutLink" style="font-size:14px; color: var(--gold-deep); font-weight:600;">Log out</a></div>
+</div>
+
+<div class="container" style="padding: 40px 32px; max-width: 1040px;">
+
+  <div class="section-head" style="margin-bottom: 28px;">
+    <h2>Welcome back, Ms. Nausheen</h2>
+    <p>Review payments, post announcements, and manage your students.</p>
+  </div>
+
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 28px; max-width: 600px;">
+    <div style="background:#fff; border:1px solid var(--line); border-radius:8px; padding:24px;">
+      <div style="font-family: var(--serif); font-size:28px; color: var(--ink);" id="studentCount">0</div>
+      <div style="color: var(--charcoal-soft); font-size:14px;">Registered students</div>
+    </div>
+    <div style="background:#fff; border:1px solid var(--gold); border-radius:8px; padding:24px;">
+      <div style="font-family: var(--serif); font-size:28px; color: var(--ink);" id="pendingCount">0</div>
+      <div style="color: var(--charcoal-soft); font-size:14px;">Payments awaiting review</div>
+    </div>
+  </div>
+
+  <section style="margin-bottom: 40px;">
+    <h3 style="font-size:18px; margin-bottom:16px;">Pending payments</h3>
+    <div id="pendingList"></div>
+  </section>
+
+  <div class="dash-grid-admin">
+
+    <section>
+      <h3 style="font-size:18px; margin-bottom:16px;">Post an announcement</h3>
+      <form id="postForm" class="post-form">
+        <div class="field">
+          <label for="content">Message</label>
+          <textarea id="content" required rows="4" placeholder="e.g. New recorded lecture on poetry analysis is up. Live class this Thursday at 6pm."></textarea>
+        </div>
+        <div class="field">
+          <label for="linkUrl">Link (optional — recorded lecture or live class link)</label>
+          <input type="url" id="linkUrl" placeholder="https://...">
+        </div>
+        <div class="field">
+          <label for="linkLabel">Link label (optional)</label>
+          <input type="text" id="linkLabel" placeholder="e.g. Watch recording / Join live class">
+        </div>
+        <button type="submit" class="btn btn-gold">Post announcement</button>
+      </form>
+
+      <h3 style="font-size:18px; margin: 32px 0 16px;">Posted announcements</h3>
+      <div id="postedList"></div>
+    </section>
+
+    <aside>
+      <h3 style="font-size:18px; margin-bottom:16px;">Registered students</h3>
+      <div id="studentTable"></div>
+    </aside>
+
+  </div>
+</div>
+
+<style>
+.dash-grid-admin {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .dash-grid-admin { grid-template-columns: 1fr; }
+}
+.post-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-family: var(--sans);
+  font-size: 14px;
+  background: var(--parchment);
+  resize: vertical;
+}
+.post-form textarea:focus, .post-form input:focus { outline: none; border-color: var(--ink); }
+.admin-post {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 20px;
+  margin-bottom: 12px;
+}
+.admin-post-date { font-size: 12px; color: var(--charcoal-soft); margin-bottom: 6px; }
+.admin-post-text { font-size: 14px; white-space: pre-wrap; margin-bottom: 8px; }
+.admin-post-delete {
+  font-size: 13px;
+  color: var(--charcoal-soft);
+  cursor: pointer;
+}
+.admin-post-delete:hover { color: #A34438; }
+
+.receipt-card {
+  background: #fff;
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  padding: 18px 20px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.receipt-info h4 { font-size: 15px; margin-bottom: 4px; }
+.receipt-info .meta { font-size: 13px; color: var(--charcoal-soft); }
+.receipt-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.receipt-actions .btn { padding: 8px 16px; font-size: 13px; }
+.receipt-empty { color: var(--charcoal-soft); font-size: 14px; }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js"></script>
+<script src="../js/auth-supabase.js"></script>
+<script>
+async function init() {
+  const ok = await isAdminLoggedIn();
+  if (!ok) {
+    window.location.href = 'admin-login.html';
+    return;
+  }
+
+  const { data: students } = await supabaseClient.from('students').select('*');
+  document.getElementById('studentCount').textContent = (students || []).length;
+
+  const table = document.getElementById('studentTable');
+  if (!students || students.length === 0) {
+    table.innerHTML = `<p style="color: var(--charcoal-soft); font-size:14px;">No students registered yet.</p>`;
+  } else {
+    table.innerHTML = students.map(s => `
+      <div style="background:#fff; border:1px solid var(--line); border-radius:6px; padding:14px 16px; margin-bottom:8px;">
+        <div style="font-weight:600; font-size:14px;">${s.name}</div>
+        <div style="font-size:13px; color: var(--charcoal-soft);">${s.email} &middot; ${planLabel(s.plan)}</div>
+      </div>
+    `).join('');
+  }
+
+  await loadPendingReceipts();
+  await loadPosts();
+  document.getElementById('pageLoader').classList.add('hide');
+}
+
+function planLabel(plan) {
+  if (plan === 'standard') return 'Standard plan';
+  if (plan === '1on1') return '1-on-1 plan';
+  return 'No active plan';
+}
+
+document.getElementById('logoutLink').addEventListener('click', async function(e){
+  e.preventDefault();
+  await logoutAdmin();
+  window.location.href = 'admin-login.html';
+});
+
+// ---- pending payments ----
+async function loadPendingReceipts() {
+  const receipts = await fetchPendingReceipts();
+  document.getElementById('pendingCount').textContent = receipts.length;
+
+  const list = document.getElementById('pendingList');
+  if (receipts.length === 0) {
+    list.innerHTML = `<p class="receipt-empty">No payments waiting for review.</p>`;
+    return;
+  }
+
+  list.innerHTML = receipts.map(r => `
+    <div class="receipt-card" data-id="${r.id}" data-student-id="${r.student_id}" data-plan="${r.plan}" data-receipt-path="${r.receipt_url}">
+      <div class="receipt-info">
+        <h4></h4>
+        <div class="meta"></div>
+      </div>
+      <div class="receipt-actions">
+        <button class="btn btn-ghost receipt-view">View receipt</button>
+        <button class="btn btn-gold receipt-approve">Approve</button>
+        <button class="btn btn-ghost receipt-reject" style="color:#A34438;">Reject</button>
+      </div>
+    </div>
+  `).join('');
+
+  // set text safely (avoids HTML injection from student-supplied note)
+  list.querySelectorAll('.receipt-card').forEach((el, i) => {
+    const r = receipts[i];
+    const studentName = (r.students && r.students.name) || 'Unknown student';
+    const studentEmail = (r.students && r.students.email) || '';
+    el.querySelector('h4').textContent = `${studentName} — ${planLabel(r.plan)}`;
+    el.querySelector('.meta').textContent =
+      `${studentEmail} · submitted ${new Date(r.created_at).toLocaleString()}` +
+      (r.note ? ` · note: ${r.note}` : '');
+  });
+}
+
+document.getElementById('pendingList').addEventListener('click', async function(e){
+  const card = e.target.closest('.receipt-card');
+  if (!card) return;
+  const receiptId = card.dataset.id;
+  const studentId = card.dataset.studentId;
+  const plan = card.dataset.plan;
+
+  if (e.target.classList.contains('receipt-view')) {
+    const receiptPath = card.dataset.receiptPath;
+    const url = await getReceiptFileUrl(receiptPath);
+    if (url) window.open(url, '_blank');
+    else alert('Could not open receipt image.');
+  }
+
+  if (e.target.classList.contains('receipt-approve')) {
+    if (!confirm('Approve this payment and grant access?')) return;
+    const result = await approveReceipt(receiptId, studentId, plan);
+    if (result.ok) {
+      await loadPendingReceipts();
+      await init(); // refresh student list plan labels too
+    } else {
+      alert('Could not approve: ' + result.error);
+    }
+  }
+
+  if (e.target.classList.contains('receipt-reject')) {
+    if (!confirm('Reject this payment? The student will need to resubmit.')) return;
+    const result = await rejectReceipt(receiptId);
+    if (result.ok) {
+      await loadPendingReceipts();
+    } else {
+      alert('Could not reject: ' + result.error);
+    }
+  }
+});
+
+// ---- announcements ----
+async function loadPosts() {
+  const posts = await fetchAnnouncements();
+  const list = document.getElementById('postedList');
+  if (!posts || posts.length === 0) {
+    list.innerHTML = `<p style="color: var(--charcoal-soft); font-size:14px;">Nothing posted yet.</p>`;
+    return;
+  }
+  list.innerHTML = posts.map(p => `
+    <div class="admin-post" data-id="${p.id}">
+      <div class="admin-post-date">${new Date(p.created_at).toLocaleString()}</div>
+      <div class="admin-post-text"></div>
+      <span class="admin-post-delete">Delete</span>
+    </div>
+  `).join('');
+  // set text safely (avoids HTML injection from stored content)
+  list.querySelectorAll('.admin-post').forEach((el, i) => {
+    el.querySelector('.admin-post-text').textContent = posts[i].content + (posts[i].link_url ? ` (${posts[i].link_label || 'link'}: ${posts[i].link_url})` : '');
+  });
+}
+
+document.getElementById('postForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const content = document.getElementById('content').value.trim();
+  const linkUrl = document.getElementById('linkUrl').value.trim();
+  const linkLabel = document.getElementById('linkLabel').value.trim();
+  if (!content) return;
+
+  const result = await postAnnouncement(content, linkUrl || null, linkLabel || null);
+  if (result.ok) {
+    document.getElementById('postForm').reset();
+    await loadPosts();
+  } else {
+    alert('Could not post: ' + result.error);
+  }
+});
+
+document.getElementById('postedList').addEventListener('click', async function(e){
+  if (!e.target.classList.contains('admin-post-delete')) return;
+  const el = e.target.closest('.admin-post');
+  const id = el.dataset.id;
+  if (!confirm('Delete this announcement?')) return;
+  await deleteAnnouncement(id);
+  await loadPosts();
+});
+
+init();
+</script>
+</body>
+</html>

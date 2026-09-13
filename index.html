@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bazme Adab — Urdu Tuition with Ms. Nausheen Sohail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="stylesheet" href="css/main.css">
+<script src="js/cursor.js" defer></script>
+</head>
+<body>
+
+<div id="pageLoader">
+  <div class="loader-mark"><span class="loader-dot"></span> Bazme Adab</div>
+</div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-mark"><img src="favicon.svg" alt=""> Bazme Adab</a>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#plans">Plans</a>
+      <a href="pages/student-login.html">Student Login</a>
+      <a href="pages/admin-login.html" style="font-size:13px; color: var(--charcoal-soft);">Admin</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container hero-grid">
+    <div>
+      <div class="hero-kicker">Cambridge O &amp; A Level Tuition</div>
+      <h1>Learn Urdu from a teacher who has taught it for two decades.</h1>
+      <p class="lead">Private lessons for O Level Urdu B and A Level Urdu, with recorded lectures, live classes, and one-to-one guidance from Ms. Nausheen.</p>
+      <div class="hero-actions">
+        <a href="#plans" class="btn btn-primary">See plans</a>
+        <a href="pages/register.html" class="btn btn-ghost">Register</a>
+      </div>
+    </div>
+    <div class="hero-panel">
+      <div class="hero-panel-label">Why students stay</div>
+      <div class="hero-panel-quote">"Every lesson is built to match exactly what the examiner is looking for &mdash; no wasted time."</div>
+      <div class="hero-panel-meta">Cambridge-aligned curriculum, taught privately</div>
+    </div>
+  </div>
+</header>
+
+<section class="about" id="about">
+  <div class="container about-grid">
+    <div class="about-portrait">
+      <div class="about-portrait-tag">
+        <span class="name">Ms. Nausheen Sohail</span>
+        <span class="role">O &amp; A Level Urdu Teacher</span>
+      </div>
+    </div>
+    <div class="about-body">
+      <h2 style="font-size:34px; margin-bottom:20px;">About the teacher</h2>
+      <p>With over twenty years in the classroom, Ms. Nausheen Sohail has guided hundreds of students through Cambridge O Level Urdu B and A Level Urdu, building both strong grades and genuine confidence in the language.</p>
+      <p>Her lessons focus on what actually matters for the exam: essay structure, comprehension technique, and precise vocabulary, taught in a calm, patient style that has made her one of the most sought-after private tutors in her subject.</p>
+      <p>This platform brings her classroom online — announcements, recorded lectures, and live class links, all in one place for enrolled students.</p>
+      <div class="about-stats">
+        <div class="about-stat"><span class="num">20+</span><span class="label">Years teaching</span></div>
+        <div class="about-stat"><span class="num">O &amp; A</span><span class="label">Level coverage</span></div>
+        <div class="about-stat"><span class="num">1:1</span><span class="label">Personal attention</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="plans">
+  <div class="container">
+    <div class="section-head">
+      <h2>Plans</h2>
+      <p>Choose the level of attention that fits how you learn.</p>
+    </div>
+    <div class="plans-grid">
+
+      <div class="plan-card">
+        <div class="plan-name">Standard</div>
+        <div class="plan-price">$25<span>/month</span></div>
+        <p class="plan-desc">Recorded lectures, live class links, and announcements — everything you need to follow the course at your own pace.</p>
+        <ul class="plan-features">
+          <li>Access to all recorded lectures</li>
+          <li>Live class links shared as scheduled</li>
+          <li>Personal to-do list to track your progress</li>
+          <li>Announcements from Ms. Nausheen</li>
+        </ul>
+        <button class="btn btn-ghost btn-block plan-btn" data-plan="standard">Choose Standard</button>
+      </div>
+
+      <div class="plan-card plan-featured">
+        <div class="plan-badge">Most personal</div>
+        <div class="plan-name">1-on-1</div>
+        <div class="plan-price">$60<span>/month</span></div>
+        <p class="plan-desc">Everything in Standard, plus direct one-to-one sessions with Ms. Nausheen for focused, personal attention.</p>
+        <ul class="plan-features">
+          <li>Everything in Standard</li>
+          <li>Weekly one-to-one live sessions</li>
+          <li>Personalised feedback on your work</li>
+          <li>Priority scheduling for live classes</li>
+        </ul>
+        <button class="btn btn-gold btn-block plan-btn" data-plan="1on1">Choose 1-on-1</button>
+      </div>
+
+    </div>
+    <p class="plans-note">Payments are handled securely — you'll be redirected to complete checkout.</p>
+  </div>
+</section>
+
+<section id="enrol">
+  <div class="container">
+    <div class="cta-band">
+      <div>
+        <h2>Ready to start?</h2>
+        <p>Register a free account, then choose your plan to unlock announcements and live classes.</p>
+      </div>
+      <a href="pages/register.html" class="btn btn-gold">Register now</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container footer-inner">
+    <span>&copy; 2026 Bazme Adab</span>
+    <div class="footer-links">
+      <a href="pages/student-login.html">Student Login</a>
+      <a href="pages/admin-login.html">Admin</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+.plans-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+@media (max-width: 860px) {
+  .plans-grid { grid-template-columns: 1fr; }
+}
+.plan-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  padding: 36px 32px;
+  position: relative;
+}
+.plan-featured {
+  border-color: var(--gold);
+  border-width: 2px;
+}
+.plan-badge {
+  position: absolute;
+  top: -12px;
+  right: 28px;
+  background: var(--gold);
+  color: var(--parchment);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 20px;
+}
+.plan-name {
+  font-family: var(--serif);
+  font-size: 20px;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.plan-price {
+  font-family: var(--serif);
+  font-size: 40px;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+.plan-price span {
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--charcoal-soft);
+  font-weight: 500;
+}
+.plan-desc {
+  font-size: 14px;
+  color: var(--charcoal-soft);
+  margin-bottom: 22px;
+}
+.plan-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 28px;
+}
+.plan-features li {
+  font-size: 14px;
+  color: var(--charcoal);
+  padding: 9px 0;
+  border-top: 1px solid var(--line-soft);
+}
+.plan-features li:first-child { border-top: none; }
+.plans-note {
+  text-align: center;
+  font-size: 13px;
+  color: var(--charcoal-soft);
+  margin-top: 28px;
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/auth-supabase.js"></script>
+<script>
+const loadStart = Date.now();
+window.addEventListener('load', function(){
+  const elapsed = Date.now() - loadStart;
+  const wait = Math.max(0, 450 - elapsed);
+  setTimeout(function(){
+    document.getElementById('pageLoader').classList.add('hide');
+  }, wait);
+});
+
+// Payment requires a logged-in student (so we know whose account to
+// grant access to once approved). Not signed in → send to register
+// first, remembering which plan they wanted. Already signed in → go
+// straight to the payment details page.
+document.querySelectorAll('.plan-btn').forEach(btn => {
+  btn.addEventListener('click', async function(){
+    const plan = btn.dataset.plan;
+    const student = await getCurrentStudent();
+    if (student) {
+      window.location.href = `pages/payment.html?plan=${plan}`;
+    } else {
+      sessionStorage.setItem('ba_selected_plan', plan);
+      window.location.href = 'pages/register.html';
+    }
+  });
+});
+</script>
+</body>
+</html>

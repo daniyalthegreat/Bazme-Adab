@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Bazme Adab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" href="../favicon.png">
+<link rel="stylesheet" href="../css/main.css">
+<script src="../js/cursor.js" defer></script>
+</head>
+<body>
+
+<div id="pageLoader">
+  <div class="loader-mark"><span class="loader-dot"></span> Bazme Adab</div>
+</div>
+
+<div class="dash-nav">
+  <a href="../index.html" class="nav-mark" style="font-family: var(--serif); font-size:18px;"><img src="../favicon.svg" alt="" style="width:19px;height:19px;"> Bazme Adab</a>
+  <div id="userBox" style="font-size:14px; color: var(--charcoal-soft);"></div>
+</div>
+
+<div class="container" style="padding: 40px 32px; max-width: 1040px;">
+  <div class="dash-grid">
+
+    <section class="dash-col">
+      <div class="section-head" style="margin-bottom: 24px;">
+        <h2 style="font-size:24px;">Announcements</h2>
+        <p style="font-size:14px;">Recorded lectures, live class links, and updates from Ms. Nausheen.</p>
+      </div>
+      <div id="announcementFeed"></div>
+      <div id="feedEmpty" style="display:none; color: var(--charcoal-soft); padding: 24px 0;">
+        No announcements yet — check back soon.
+      </div>
+    </section>
+
+    <aside class="dash-col">
+      <div class="section-head" style="margin-bottom: 24px;">
+        <h2 style="font-size:24px;">My to-do list</h2>
+        <p style="font-size:14px;">Personal — only you can see this.</p>
+      </div>
+
+      <form id="todoForm" style="display:flex; gap:8px; margin-bottom:20px;">
+        <input type="text" id="todoInput" placeholder="Add a task..." required
+               style="flex:1; padding:11px 14px; border:1px solid var(--line); border-radius:6px; font-family:var(--sans); font-size:14px; background:#fff;">
+        <button type="submit" class="btn btn-primary" style="padding:11px 18px;">Add</button>
+      </form>
+
+      <div id="todoList"></div>
+      <div id="todoEmpty" style="display:none; color: var(--charcoal-soft); font-size:14px; padding: 12px 0;">
+        Nothing on your list yet.
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<style>
+.dash-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .dash-grid { grid-template-columns: 1fr; }
+}
+.announcement-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 22px 24px;
+  margin-bottom: 16px;
+}
+.announcement-date {
+  font-size: 12px;
+  color: var(--charcoal-soft);
+  margin-bottom: 8px;
+}
+.announcement-text {
+  font-size: 15px;
+  color: var(--charcoal);
+  white-space: pre-wrap;
+  margin-bottom: 10px;
+}
+.announcement-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gold-deep);
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.announcement-link:hover { border-color: var(--gold-deep); }
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 4px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.todo-item input[type="checkbox"] {
+  width: 17px; height: 17px;
+  accent-color: var(--teal);
+  flex-shrink: 0;
+}
+.todo-text {
+  flex: 1;
+  font-size: 14px;
+  color: var(--charcoal);
+}
+.todo-text.done {
+  text-decoration: line-through;
+  color: var(--charcoal-soft);
+}
+.todo-delete {
+  font-size: 13px;
+  color: var(--charcoal-soft);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.todo-delete:hover { color: #A34438; }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js"></script>
+<script src="../js/auth-supabase.js"></script>
+<script>
+let student = null;
+const userBox = document.getElementById('userBox');
+
+async function init() {
+  // If this page load is the redirect-back from Google sign-in,
+  // this creates the student's profile row on first use (Google
+  // sign-in has no separate "register" step to do that in) and tells
+  // us whether the account turned out to be an admin instead.
+  const authedUser = await supabaseClient.auth.getUser();
+  if (authedUser.data.user) {
+    const googleResult = await completeGoogleSignIn();
+    if (googleResult.ok && googleResult.isAdmin) {
+      window.location.href = 'admin-dashboard.html';
+      return;
+    }
+  }
+
+  student = await getCurrentStudent();
+
+  if (!student) {
+    window.location.href = 'student-login.html';
+    return;
+  }
+
+  userBox.innerHTML = `Signed in as <strong style="color:var(--ink)">${student.name}</strong> &middot; <a href="#" id="logoutLink" style="color:var(--gold-deep); font-weight:600;">Log out</a>`;
+
+  // Gate: only students with an active plan see announcements/todos.
+  // `plan` is set to 'none' by default and can ONLY be changed by an
+  // admin approving a payment receipt — see supabase-setup.sql.
+  if (!student.plan || student.plan === 'none') {
+    const preSelected = sessionStorage.getItem('ba_selected_plan');
+    if (preSelected) {
+      sessionStorage.removeItem('ba_selected_plan');
+      window.location.href = `payment.html?plan=${preSelected}`;
+      return;
+    }
+    await showPlanGate();
+    document.getElementById('pageLoader').classList.add('hide');
+    return;
+  }
+
+  await loadAnnouncements();
+  await loadTodos();
+  document.getElementById('pageLoader').classList.add('hide');
+}
+
+async function showPlanGate() {
+  const receipts = await fetchMyReceipts(student.id);
+  const pending = receipts.find(r => r.status === 'pending');
+
+  if (pending) {
+    document.querySelector('.container').innerHTML = `
+      <div style="max-width:480px; margin: 60px auto; text-align:center;">
+        <h2 style="font-size:26px; margin-bottom:12px;">Payment under review</h2>
+        <p style="color:var(--charcoal-soft);">
+          Your payment for the ${pending.plan === '1on1' ? '1-on-1' : 'Standard'} plan is submitted
+          and waiting for Ms. Nausheen to approve it. This page will unlock automatically once approved.
+        </p>
+      </div>
+    `;
+    return;
+  }
+
+  document.querySelector('.container').innerHTML = `
+    <div style="max-width:480px; margin: 60px auto; text-align:center;">
+      <h2 style="font-size:26px; margin-bottom:12px;">Choose a plan to continue</h2>
+      <p style="color:var(--charcoal-soft); margin-bottom:28px;">
+        Your account is registered — pick a plan below to unlock announcements,
+        recorded lectures, live class links, and your to-do list.
+      </p>
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <button class="btn btn-ghost btn-block" id="gateStandard">Choose Standard — $25/month</button>
+        <button class="btn btn-gold btn-block" id="gate1on1">Choose 1-on-1 — $60/month</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('gateStandard').addEventListener('click', () => {
+    window.location.href = 'payment.html?plan=standard';
+  });
+  document.getElementById('gate1on1').addEventListener('click', () => {
+    window.location.href = 'payment.html?plan=1on1';
+  });
+}
+
+document.addEventListener('click', async function(e){
+  if (e.target.id === 'logoutLink') {
+    e.preventDefault();
+    await logoutStudent();
+    window.location.href = 'student-login.html';
+  }
+});
+
+// ---- Announcements (read-only for students) ----
+async function loadAnnouncements() {
+  const feed = document.getElementById('announcementFeed');
+  const empty = document.getElementById('feedEmpty');
+  const posts = await fetchAnnouncements();
+
+  if (!posts || posts.length === 0) {
+    empty.style.display = 'block';
+    return;
+  }
+
+  feed.innerHTML = posts.map(p => `
+    <div class="announcement-card">
+      <div class="announcement-date">${formatDate(p.created_at)}</div>
+      <div class="announcement-text">${escapeHtml(p.content)}</div>
+      ${p.link_url ? `<a href="${escapeHtml(p.link_url)}" target="_blank" rel="noopener" class="announcement-link">${escapeHtml(p.link_label || 'Open link')} &rarr;</a>` : ''}
+    </div>
+  `).join('');
+}
+
+function formatDate(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str || '';
+  return div.innerHTML;
+}
+
+// ---- To-do list (personal, per student) ----
+async function loadTodos() {
+  const list = document.getElementById('todoList');
+  const empty = document.getElementById('todoEmpty');
+  const todos = await fetchTodos(student.id);
+
+  if (!todos || todos.length === 0) {
+    list.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  list.innerHTML = todos.map(t => `
+    <div class="todo-item" data-id="${t.id}">
+      <input type="checkbox" ${t.is_done ? 'checked' : ''} class="todo-check">
+      <span class="todo-text ${t.is_done ? 'done' : ''}">${escapeHtml(t.task)}</span>
+      <span class="todo-delete">Remove</span>
+    </div>
+  `).join('');
+}
+
+document.getElementById('todoForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const input = document.getElementById('todoInput');
+  const text = input.value.trim();
+  if (!text) return;
+  await addTodo(student.id, text);
+  input.value = '';
+  await loadTodos();
+});
+
+document.getElementById('todoList').addEventListener('click', async function(e){
+  const item = e.target.closest('.todo-item');
+  if (!item) return;
+  const id = item.dataset.id;
+
+  if (e.target.classList.contains('todo-check')) {
+    await toggleTodo(id, e.target.checked);
+    await loadTodos();
+  }
+  if (e.target.classList.contains('todo-delete')) {
+    await deleteTodo(id);
+    await loadTodos();
+  }
+});
+
+init();
+</script>
+</body>
+</html>

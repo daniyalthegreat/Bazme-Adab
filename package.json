@@ -1,0 +1,6 @@
+{
+  "name": "bazme-adab",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static site — no build step or server dependencies required for the current manual-payment-approval flow. Kept for future use if a real payment gateway is added later (see api-stripe-optional/)."
+}

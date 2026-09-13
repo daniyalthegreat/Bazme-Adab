@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment Submitted — Bazme Adab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" href="../favicon.png">
+<link rel="stylesheet" href="../css/main.css">
+<script src="../js/cursor.js" defer></script>
+</head>
+<body>
+
+<div id="pageLoader">
+  <div class="loader-mark"><span class="loader-dot"></span> Bazme Adab</div>
+</div>
+
+<div class="auth-wrap">
+  <div class="auth-wrap-inner" style="max-width: 460px;">
+    <div class="auth-card" style="text-align:center;">
+      <a href="../index.html" class="auth-mark"><img src="../favicon.svg" alt=""> Bazme Adab</a>
+      <h2>Payment submitted</h2>
+      <p class="auth-sub">Ms. Nausheen will review your receipt shortly. Once approved, your dashboard unlocks automatically — no need to do anything else.</p>
+      <a href="dashboard.html" class="btn btn-primary btn-block">Back to dashboard</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const loadStart = Date.now();
+window.addEventListener('load', function(){
+  const elapsed = Date.now() - loadStart;
+  const wait = Math.max(0, 450 - elapsed);
+  setTimeout(function(){
+    document.getElementById('pageLoader').classList.add('hide');
+  }, wait);
+});
+</script>
+</body>
+</html>

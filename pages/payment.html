@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Complete Payment — Bazme Adab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" href="../favicon.png">
+<link rel="stylesheet" href="../css/main.css">
+<script src="../js/cursor.js" defer></script>
+</head>
+<body>
+
+<div id="pageLoader">
+  <div class="loader-mark"><span class="loader-dot"></span> Bazme Adab</div>
+</div>
+
+<div class="auth-wrap">
+  <div class="auth-wrap-inner" style="max-width: 480px;">
+    <a href="dashboard.html" class="back-link">&larr; Back to dashboard</a>
+    <div class="auth-card">
+      <a href="../index.html" class="auth-mark"><img src="../favicon.svg" alt=""> Bazme Adab</a>
+      <h2 id="planTitle">Complete your payment</h2>
+      <p class="auth-sub" id="planSub">Send payment, then upload your receipt below</p>
+
+      <div class="auth-alert" id="alert"></div>
+
+      <div class="payment-details">
+        <div class="payment-row">
+          <span class="payment-label">Bank</span>
+          <span class="payment-value">Meezan Bank (placeholder)</span>
+        </div>
+        <div class="payment-row">
+          <span class="payment-label">Account title</span>
+          <span class="payment-value">Nausheen Sohail</span>
+        </div>
+        <div class="payment-row">
+          <span class="payment-label">Account / IBAN</span>
+          <span class="payment-value">PK00 XXXX 0000 0000 0000 0000 (placeholder)</span>
+        </div>
+        <div class="payment-row">
+          <span class="payment-label">Amount</span>
+          <span class="payment-value" id="planAmount">—</span>
+        </div>
+      </div>
+      <p class="payment-note">Send the exact amount above via your banking app, then upload a screenshot of the confirmation below. Ms. Nausheen will review and approve it — this usually doesn't take long.</p>
+
+      <form id="receiptForm">
+        <div class="field">
+          <label for="receiptFile">Payment screenshot</label>
+          <input type="file" id="receiptFile" accept="image/*" required>
+        </div>
+        <div class="field">
+          <label for="note">Note (optional)</label>
+          <input type="text" id="note" placeholder="e.g. transaction ID, sent from which app">
+        </div>
+        <div class="field-error" id="err"></div>
+        <button type="submit" class="btn btn-gold btn-block" id="submitBtn">Submit for approval</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+.payment-details {
+  background: var(--parchment-dim);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-s);
+  padding: 20px;
+  margin-bottom: 18px;
+}
+.payment-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 14px;
+}
+.payment-row:last-child { border-bottom: none; }
+.payment-label { color: var(--charcoal-soft); }
+.payment-value { font-weight: 600; color: var(--ink); text-align: right; }
+.payment-note {
+  font-size: 13px;
+  color: var(--charcoal-soft);
+  margin-bottom: 24px;
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js"></script>
+<script src="../js/auth-supabase.js"></script>
+<script>
+const loadStart = Date.now();
+window.addEventListener('load', function(){
+  const elapsed = Date.now() - loadStart;
+  const wait = Math.max(0, 450 - elapsed);
+  setTimeout(function(){
+    document.getElementById('pageLoader').classList.add('hide');
+  }, wait);
+});
+
+const PLAN_LABELS = { standard: 'Standard', '1on1': '1-on-1' };
+const PLAN_AMOUNTS = { standard: '$25 / month (or PKR equivalent)', '1on1': '$60 / month (or PKR equivalent)' };
+
+const params = new URLSearchParams(window.location.search);
+let plan = params.get('plan');
+let student = null;
+
+async function init() {
+  student = await getCurrentStudent();
+  if (!student) {
+    window.location.href = 'student-login.html';
+    return;
+  }
+
+  if (!plan || !PLAN_LABELS[plan]) {
+    plan = sessionStorage.getItem('ba_selected_plan') || 'standard';
+  }
+
+  document.getElementById('planTitle').textContent = `${PLAN_LABELS[plan]} plan payment`;
+  document.getElementById('planAmount').textContent = PLAN_AMOUNTS[plan];
+
+  // If they already have a pending or approved claim for this plan, say so.
+  const existing = await fetchMyReceipts(student.id);
+  const relevant = existing.find(r => r.plan === plan);
+  if (relevant) {
+    showExistingStatus(relevant);
+  }
+}
+
+function showExistingStatus(receipt) {
+  const alertEl = document.getElementById('alert');
+  const form = document.getElementById('receiptForm');
+  if (receipt.status === 'pending') {
+    alertEl.textContent = 'Your payment is submitted and waiting for approval.';
+    alertEl.classList.add('show');
+    form.style.display = 'none';
+  } else if (receipt.status === 'approved') {
+    alertEl.textContent = 'This payment was already approved — redirecting to your dashboard...';
+    alertEl.classList.add('show');
+    form.style.display = 'none';
+    setTimeout(() => window.location.href = 'dashboard.html', 1200);
+  } else if (receipt.status === 'rejected') {
+    alertEl.textContent = 'Your last submission for this plan was not approved. Please check the details and try again.';
+    alertEl.classList.add('show');
+  }
+}
+
+document.getElementById('receiptForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const fileInput = document.getElementById('receiptFile');
+  const note = document.getElementById('note').value.trim();
+  const errEl = document.getElementById('err');
+  const btn = document.getElementById('submitBtn');
+  errEl.style.display = 'none';
+
+  const file = fileInput.files[0];
+  if (!file) {
+    errEl.textContent = 'Please choose a screenshot to upload.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Uploading...';
+
+  const result = await submitPaymentReceipt(student.id, plan, file, note);
+
+  if (result.ok) {
+    sessionStorage.removeItem('ba_selected_plan');
+    window.location.href = 'payment-submitted.html';
+  } else {
+    errEl.textContent = result.error;
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Submit for approval';
+  }
+});
+
+init();
+</script>
+</body>
+</html>
