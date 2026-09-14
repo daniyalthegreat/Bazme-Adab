@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms & Conditions — Bazme Adab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" href="../favicon.png">
+<link rel="stylesheet" href="../css/main.css">
+<script src="../js/cursor.js" defer></script>
+</head>
+<body>
+
+<div id="pageLoader">
+  <div class="loader-mark"><span class="loader-dot"></span> Bazme Adab</div>
+</div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-mark"><img src="../favicon.svg" alt=""> Bazme Adab</a>
+    <div class="nav-links">
+      <a href="../index.html">Home</a>
+      <a href="student-login.html">Student Login</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container" style="max-width: 760px; padding: 56px 32px 80px;">
+  <h1 style="font-size:32px; margin-bottom:8px;">Terms & Conditions</h1>
+  <p style="color:var(--charcoal-soft); font-size:14px; margin-bottom:40px;">Last updated: <span id="lastUpdated"></span></p>
+
+  <div class="legal-body">
+    <p>These terms govern your use of Bazme Adab, a private Urdu tuition platform run by Ms. Nausheen Sohail for O Level and A Level students. By registering an account, you agree to these terms.</p>
+
+    <h2>1. What we offer</h2>
+    <p>Bazme Adab provides access to announcements from Ms. Nausheen, which may include recorded lecture links, live class links, and course updates, along with a personal to-do list for your own use. Content and scheduling are at Ms. Nausheen's discretion and may change over time.</p>
+
+    <h2>2. Plans and payment</h2>
+    <p>Access to announcements and course content requires an active paid plan (Standard or 1-on-1), billed monthly. Payment is made directly to Ms. Nausheen via bank or mobile wallet transfer — you upload a screenshot as proof of payment, which is then manually reviewed and approved before access is granted.</p>
+    <p>Plans renew monthly. It is your responsibility to submit payment each billing period to maintain access; access is not automatically continued without a new payment submission and approval.</p>
+
+    <h2>3. Refund policy</h2>
+    <p>Fees are charged monthly. Once a payment has been approved and dashboard access has been granted for that period, that month's fee is non-refundable. If you believe a payment was approved in error, contact Ms. Nausheen directly to resolve it.</p>
+
+    <h2>4. Account responsibilities</h2>
+    <p>You are responsible for keeping your login credentials secure and for all activity under your account. Accounts are personal and may not be shared with other students. Ms. Nausheen reserves the right to suspend or terminate access for accounts found to be shared, fraudulent, or in violation of these terms.</p>
+
+    <h2>5. Accuracy of payment claims</h2>
+    <p>By submitting a payment receipt, you confirm that the screenshot and any note provided are accurate and genuine. Submitting false or misleading proof of payment may result in account suspension.</p>
+
+    <h2>6. Content ownership</h2>
+    <p>All lecture content, recordings, and course materials shared through this site remain the intellectual property of Ms. Nausheen Sohail. They are provided for your personal study use only and may not be redistributed, re-uploaded, or shared outside your own account without permission.</p>
+
+    <h2>7. Availability</h2>
+    <p>We aim to keep the site accessible and announcements up to date, but we don't guarantee uninterrupted availability. Live classes and scheduling are subject to change; students will be notified via announcements where possible.</p>
+
+    <h2>8. Limitation of liability</h2>
+    <p>Bazme Adab is provided as a private tutoring platform. While we take reasonable care with course content and site security, we are not liable for indirect losses arising from use of the site, including missed classes due to technical issues outside our control.</p>
+
+    <h2>9. Changes to these terms</h2>
+    <p>These terms may be updated from time to time. Continued use of the site after changes are posted means you accept the updated terms.</p>
+
+    <h2>10. Contact</h2>
+    <p>Questions about these terms can be directed to Ms. Nausheen Sohail through the contact details provided on the site.</p>
+
+    <p style="margin-top: 32px;">See also our <a href="privacy-policy.html">Privacy Policy</a>.</p>
+  </div>
+</div>
+
+<style>
+.legal-body h2 {
+  font-size: 19px;
+  margin-top: 36px;
+  margin-bottom: 12px;
+}
+.legal-body p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--charcoal);
+  margin-bottom: 14px;
+}
+.legal-body a {
+  color: var(--gold-deep);
+  font-weight: 600;
+}
+</style>
+
+<script>
+const loadStart = Date.now();
+window.addEventListener('load', function(){
+  const elapsed = Date.now() - loadStart;
+  const wait = Math.max(0, 450 - elapsed);
+  setTimeout(function(){
+    document.getElementById('pageLoader').classList.add('hide');
+  }, wait);
+});
+document.getElementById('lastUpdated').textContent = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+</script>
+</body>
+</html>
