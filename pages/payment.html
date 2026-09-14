@@ -112,7 +112,7 @@ let student = null;
 async function init() {
   student = await getCurrentStudent();
   if (!student) {
-    window.location.href = '/student-login';
+    window.location.href = 'student-login.html';
     return;
   }
 
@@ -142,7 +142,7 @@ function showExistingStatus(receipt) {
     alertEl.textContent = 'This payment was already approved — redirecting to your dashboard...';
     alertEl.classList.add('show');
     form.style.display = 'none';
-    setTimeout(() => window.location.href = '/dashboard', 1200);
+    setTimeout(() => window.location.href = 'dashboard.html', 1200);
   } else if (receipt.status === 'rejected') {
     alertEl.textContent = 'Your last submission for this plan was not approved. Please check the details and try again.';
     alertEl.classList.add('show');
@@ -171,7 +171,7 @@ document.getElementById('receiptForm').addEventListener('submit', async function
 
   if (result.ok) {
     sessionStorage.removeItem('ba_selected_plan');
-    window.location.href = '/payment-submitted';
+    window.location.href = 'payment-submitted.html';
   } else {
     errEl.textContent = result.error;
     errEl.style.display = 'block';
