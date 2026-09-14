@@ -230,10 +230,10 @@ document.querySelectorAll('.plan-btn').forEach(btn => {
     const plan = btn.dataset.plan;
     const student = await getCurrentStudent();
     if (student) {
-      window.location.href = `/payment?plan=${plan}`;
+      window.location.href = `pages/payment.html?plan=${plan}`;
     } else {
       sessionStorage.setItem('ba_selected_plan', plan);
-      window.location.href = '/register';
+      window.location.href = 'pages/register.html';
     }
   });
 });
