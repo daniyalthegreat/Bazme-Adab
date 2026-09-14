@@ -140,7 +140,7 @@
 async function init() {
   const ok = await isAdminLoggedIn();
   if (!ok) {
-    window.location.href = '/admin-login';
+    window.location.href = 'admin-login.html';
     return;
   }
 
@@ -173,7 +173,7 @@ function planLabel(plan) {
 document.getElementById('logoutLink').addEventListener('click', async function(e){
   e.preventDefault();
   await logoutAdmin();
-  window.location.href = '/admin-login';
+  window.location.href = 'admin-login.html';
 });
 
 // ---- pending payments ----
