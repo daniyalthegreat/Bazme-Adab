@@ -53,6 +53,9 @@
     <div class="auth-links" style="justify-content:center;">
       <a href="student-login.html">Already have an account? Sign in</a>
     </div>
+    <p style="text-align:center; font-size:12px; color:var(--charcoal-soft); margin-top:18px;">
+      By registering, you agree to our <a href="terms-and-conditions.html" style="color:var(--charcoal-soft); text-decoration:underline;">Terms & Conditions</a> and <a href="privacy-policy.html" style="color:var(--charcoal-soft); text-decoration:underline;">Privacy Policy</a>.
+    </p>
     </div>
   </div>
 </div>
@@ -71,7 +74,7 @@ window.addEventListener('load', function(){
 });
 
 document.getElementById('googleSignIn').addEventListener('click', async function(){
-  const result = await signInWithGoogle('dashboard.html');
+  const result = await signInWithGoogle('dashboard');
   if (!result.ok) {
     const errEl = document.getElementById('err');
     errEl.textContent = result.error;
@@ -87,7 +90,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
   const errEl = document.getElementById('err');
   const result = await registerStudent(name, email, password);
   if (result.ok) {
-    window.location.href = 'dashboard.html';
+    window.location.href = '/dashboard';
   } else {
     errEl.textContent = result.error;
     errEl.style.display = 'block';
