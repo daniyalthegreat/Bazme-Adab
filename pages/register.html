@@ -90,7 +90,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
   const errEl = document.getElementById('err');
   const result = await registerStudent(name, email, password);
   if (result.ok) {
-    window.location.href = '/dashboard';
+    window.location.href = 'dashboard.html';
   } else {
     errEl.textContent = result.error;
     errEl.style.display = 'block';
