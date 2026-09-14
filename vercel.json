@@ -10,6 +10,9 @@
     { "source": "/payment-submitted", "destination": "/pages/payment-submitted.html" },
     { "source": "/admin-login", "destination": "/pages/admin-login.html" },
     { "source": "/admin-forgot-password", "destination": "/pages/admin-forgot-password.html" },
-    { "source": "/admin-dashboard", "destination": "/pages/admin-dashboard.html" }
+    { "source": "/admin-dashboard", "destination": "/pages/admin-dashboard.html" },
+    { "source": "/reset-password-confirm", "destination": "/pages/reset-password-confirm.html" },
+    { "source": "/privacy-policy", "destination": "/pages/privacy-policy.html" },
+    { "source": "/terms-and-conditions", "destination": "/pages/terms-and-conditions.html" }
   ]
 }
