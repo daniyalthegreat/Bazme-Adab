@@ -94,7 +94,7 @@ document.getElementById('adminForm').addEventListener('submit', async function(e
   const errEl = document.getElementById('err');
   const result = await loginAdmin(email, password);
   if (result.ok) {
-    window.location.href = '/admin-dashboard';
+    window.location.href = 'admin-dashboard.html';
   } else {
     errEl.textContent = result.error;
     errEl.style.display = 'block';
