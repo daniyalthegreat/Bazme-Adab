@@ -53,6 +53,11 @@
     <div class="auth-footer-note">
       <a href="student-login.html" style="color: var(--charcoal-soft); font-weight:600;">Sign in as student instead</a>
     </div>
+    <div class="auth-footer-note" style="margin-top:8px;">
+      <a href="privacy-policy.html" style="color: var(--charcoal-soft); font-size:12px;">Privacy Policy</a>
+      &nbsp;&middot;&nbsp;
+      <a href="terms-and-conditions.html" style="color: var(--charcoal-soft); font-size:12px;">Terms & Conditions</a>
+    </div>
     </div>
   </div>
 </div>
@@ -71,10 +76,10 @@ window.addEventListener('load', function(){
 });
 
 document.getElementById('googleSignIn').addEventListener('click', async function(){
-  // Google always redirects back through dashboard.html, which checks
+  // Google always redirects back through dashboard, which checks
   // whether the signed-in account is the admin and routes accordingly —
   // same redirect target as the student flow, different outcome.
-  const result = await signInWithGoogle('dashboard.html');
+  const result = await signInWithGoogle('dashboard');
   if (!result.ok) {
     const errEl = document.getElementById('err');
     errEl.textContent = result.error;
@@ -89,7 +94,7 @@ document.getElementById('adminForm').addEventListener('submit', async function(e
   const errEl = document.getElementById('err');
   const result = await loginAdmin(email, password);
   if (result.ok) {
-    window.location.href = 'admin-dashboard.html';
+    window.location.href = '/admin-dashboard';
   } else {
     errEl.textContent = result.error;
     errEl.style.display = 'block';
