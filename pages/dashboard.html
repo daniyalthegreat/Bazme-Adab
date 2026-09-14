@@ -144,7 +144,7 @@ async function init() {
   if (authedUser.data.user) {
     const googleResult = await completeGoogleSignIn();
     if (googleResult.ok && googleResult.isAdmin) {
-      window.location.href = '/admin-dashboard';
+      window.location.href = 'admin-dashboard.html';
       return;
     }
   }
@@ -152,7 +152,7 @@ async function init() {
   student = await getCurrentStudent();
 
   if (!student) {
-    window.location.href = '/student-login';
+    window.location.href = 'student-login.html';
     return;
   }
 
@@ -165,7 +165,7 @@ async function init() {
     const preSelected = sessionStorage.getItem('ba_selected_plan');
     if (preSelected) {
       sessionStorage.removeItem('ba_selected_plan');
-      window.location.href = `payment?plan=${preSelected}`;
+      window.location.href = `payment.html?plan=${preSelected}`;
       return;
     }
     await showPlanGate();
@@ -209,10 +209,10 @@ async function showPlanGate() {
     </div>
   `;
   document.getElementById('gateStandard').addEventListener('click', () => {
-    window.location.href = '/payment?plan=standard';
+    window.location.href = 'payment.html?plan=standard';
   });
   document.getElementById('gate1on1').addEventListener('click', () => {
-    window.location.href = '/payment?plan=1on1';
+    window.location.href = 'payment.html?plan=1on1';
   });
 }
 
@@ -220,7 +220,7 @@ document.addEventListener('click', async function(e){
   if (e.target.id === 'logoutLink') {
     e.preventDefault();
     await logoutStudent();
-    window.location.href = '/student-login';
+    window.location.href = 'student-login.html';
   }
 });
 
