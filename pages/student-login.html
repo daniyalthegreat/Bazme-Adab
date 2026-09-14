@@ -91,7 +91,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
   const errEl = document.getElementById('err');
   const result = await loginStudent(email, password);
   if (result.ok) {
-    window.location.href = '/dashboard';
+    window.location.href = 'dashboard.html';
   } else {
     errEl.textContent = result.error;
     errEl.style.display = 'block';
